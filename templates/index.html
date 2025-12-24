@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi App FastAPI</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📡 FastAPI + HTML</h1>
+            <p class="subtitle">Aplicación web súper básica</p>
+        </header>
+
+        <main>
+            <section class="card">
+                <h2>{{ mensaje }}</h2>
+                <p>Esta es una página HTML servida por FastAPI</p>
+            </section>
+
+            <section class="card">
+                <h3>🔌 Probar API</h3>
+                <div class="api-test">
+                    <input type="text" id="nombreInput" placeholder="Escribe tu nombre">
+                    <button onclick="saludar()">Saludar</button>
+                    <p id="respuestaAPI"></p>
+                </div>
+            </section>
+
+            <section class="card">
+                <h3>📤 Enviar datos</h3>
+                <div class="form">
+                    <input type="text" id="datoInput" placeholder="Mensaje a enviar">
+                    <button onclick="enviarDatos()">Enviar</button>
+                    <p id="respuestaPost"></p>
+                </div>
+            </section>
+
+            <section class="card">
+                <h3>📚 Endpoints disponibles:</h3>
+                <ul class="endpoints">
+                    <li><code>GET /</code> - Esta página</li>
+                    <li><code>GET /api/saludo/{nombre}</code> - API de saludo</li>
+                    <li><code>POST /api/enviar</code> - Recibir datos JSON</li>
+                    <li><code>GET /docs</code> - Documentación automática Swagger</li>
+                    <li><code>GET /redoc</code> - Documentación alternativa</li>
+                </ul>
+            </section>
+        </main>
+
+        <footer>
+            <p>FastAPI | Python | HTML | CSS</p>
+        </footer>
+    </div>
+
+    <script>
+        async function saludar() {
+            const nombre = document.getElementById('nombreInput').value || 'Visitante';
+            const response = await fetch(`/api/saludo/${nombre}`);
+            const data = await response.json();
+            document.getElementById('respuestaAPI').innerHTML = 
+                `<strong>Respuesta:</strong> ${data.mensaje}`;
+        }
+
+        async function enviarDatos() {
+            const dato = document.getElementById('datoInput').value;
+            const response = await fetch('/api/enviar', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({mensaje: dato, timestamp: new Date().toISOString()})
+            });
+            const data = await response.json();
+            document.getElementById('respuestaPost').innerHTML = 
+                `<strong>Respuesta:</strong> ${JSON.stringify(data)}`;
+        }
+    </script>
+</body>
+</html>
